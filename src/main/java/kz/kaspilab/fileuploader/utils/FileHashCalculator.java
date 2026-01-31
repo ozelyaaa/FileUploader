@@ -1,34 +1,33 @@
 package kz.kaspilab.fileuploader.utils;
 
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
 @Component
 public class FileHashCalculator {
 
-    public Mono<String> calculateHashSHA256(FilePart filePart) {
-        MessageDigest messageDigest;
+    public Mono<String> calculateHashSHA256(Path filePath) {
+        return Mono.fromCallable(() -> {
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-256");
-        }
-        catch (NoSuchAlgorithmException e) {
-            return Mono.error(e);
-        }
+                    try (InputStream inputStream = Files.newInputStream(filePath)) {
+                        byte[] buffer = new byte[8_192]; // 8 KB chunks
+                        int bytesRead;
 
-        return filePart.content()
-                .doOnNext(dataBuffer -> {
-                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                    dataBuffer.read(bytes);
-                    DataBufferUtils.release(dataBuffer);
-                    messageDigest.update(bytes);
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            digest.update(buffer, 0, bytesRead);
+                        }
+                    }
+
+                    return HexFormat.of().formatHex(digest.digest());
                 })
-                .then(Mono.fromSupplier(() -> HexFormat.of().formatHex(messageDigest.digest())));
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

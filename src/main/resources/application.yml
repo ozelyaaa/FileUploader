@@ -1,6 +1,12 @@
 server:
   port: 8080
 
+security:  # for demo purposes
+  jwt:
+    secret: "a-very-long-and-secure-base64-encoded-secret-key-of-at-least-256-bits"
+    issuer: "file-uploader"
+    ttl-minutes: 60
+
 spring:
   application:
     name: FileUploader

@@ -11,3 +11,6 @@ public class FileUploaderApplication {
     }
 
 }
+
+//TODO:
+//Add external file server (2 options: local file system or external one

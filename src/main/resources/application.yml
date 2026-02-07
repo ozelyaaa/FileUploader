@@ -1,11 +1,17 @@
 server:
   port: 8080
 
+security:
+  jwt:
+    secret: ${SECURITY_JWT_SECRET}
+    issuer: ${SECURITY_JWT_ISSUER}
+    ttl-minutes: ${SECURITY_JWT_TTL_MINUTES}
+
 spring:
   application:
     name: FileUploader
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/filedb
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/file_uploader}
       auto-index-creation: true

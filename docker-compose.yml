@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: file-uploader-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    container_name: file-uploader-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/file_uploader
+      SECURITY_JWT_SECRET: "a-very-long-and-secure-base64-encoded-secret-key-of-at-least-256-bits"
+      SECURITY_JWT_ISSUER: "file-uploader"
+      SECURITY_JWT_TTL_MINUTES: 60
+
+volumes:
+  mongo_data:

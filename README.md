@@ -41,7 +41,7 @@
 ### 1️⃣ Клонировать репозиторий
 
 ```bash
-git clone [<URL_РЕПОЗИТОРИЯ>](https://github.com/ozelyaaa/FileUploader)
+git clone https://github.com/ozelyaaa/FileUploader
 cd <ИМЯ_ПРОЕКТА>
 ```
 

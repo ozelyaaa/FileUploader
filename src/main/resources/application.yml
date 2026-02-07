@@ -1,11 +1,11 @@
 server:
   port: 8080
 
-security:  # for demo purposes
+security:
   jwt:
-    secret: "a-very-long-and-secure-base64-encoded-secret-key-of-at-least-256-bits"
-    issuer: "file-uploader"
-    ttl-minutes: 60
+    secret: ${SECURITY_JWT_SECRET}
+    issuer: ${SECURITY_JWT_ISSUER}
+    ttl-minutes: ${SECURITY_JWT_TTL_MINUTES}
 
 spring:
   application:
@@ -13,5 +13,5 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/filedb
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/file_uploader}
       auto-index-creation: true
